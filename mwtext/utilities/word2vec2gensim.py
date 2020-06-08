@@ -18,9 +18,6 @@ r"""
         <output>            The name of the main output file to write.
                             A second output file will be written with
                             ".vectors.numpy" added to the filename provided.
-        --limit=<num>       Set a limit on the number of words that should be
-                            loaded from the word2vec formatted file.  Unlimited
-                            if not specified.
         --verbose           Print progress information to stderr.  Kind of a
                             mess when running multi-threaded.
         --debug             Print debug logs.
@@ -43,12 +40,11 @@ def main(argv=None):
 
     input_path = args['<input>']
     output_path = args['<output>']
-    limit = int(args['--limit']) if args['--limit'] is not None else None
     verbose = args['--verbose']
 
-    word2vec2gensim(input_path, limit, output_path, verbose)
+    word2vec2gensim(input_path, output_path, verbose)
 
 
-def word2vec2gensim(input_path, limit, output_path, verbose):
-    model = KeyedVectors.load_word2vec_format(input_path, limit=limit)
+def word2vec2gensim(input_path, output_path, verbose):
+    model = KeyedVectors.load_word2vec_format(input_path)
     model.save(output_path)
