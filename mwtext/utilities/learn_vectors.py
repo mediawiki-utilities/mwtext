@@ -11,7 +11,8 @@ Options:
                      value will be interpretted as a JSON blob.
     <input>          The path of an input file containing labels and words in
                      the fasttext format.
-    --limit=<num>    Set a limit on the number of words in fasttext model, 0 (no cutoff) if none set                    
+    --limit=<num>    Set a limit on the number of words in fasttext model, 0
+                     (no cutoff) if none set
     --output=<path>  The output file to write vectors to [default: <stdout>]
     --debug          Print debug information.
 """
@@ -37,15 +38,13 @@ def main(argv):
         output = sys.stdout
     else:
         output = open(args['--output'], "w")
-        
     limit = int(args['--limit']) if args['--limit'] is not None else 0
-    
     learn_vectors(input_path, params, limit, output)
 
 
 def learn_vectors(input_path, params, limit, output):
     model = fasttext.train_supervised(input_path, **params)
-    model.quantize(input=input_path, cutoff = limit, retrain=True, qnorm=True)
+    model.quantize(input=input_path, cutoff=limit, retrain=True, qnorm=True)
 
     dimensions = params.get('dim', 100)
     words = len(model.words)
