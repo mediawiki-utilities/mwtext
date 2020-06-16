@@ -23,7 +23,6 @@ class WikidataPreprocessor:
                 yield (prop,)
 
 
-
     def get_sorted_properties(self):
         session = requests.Session()
         URL = "https://www.wikidata.org/w/api.php"
