@@ -37,7 +37,16 @@ from ..wikidata_preprocessor import WikidataPreprocessor
 
 
 def preprocess_wikidata(dump, verbose=False):
+
+    def PID_comparator(claim_tuple):
+        try:
+            return sorted_PIDs.index(claim_tuple[0])
+        except:
+            return len(sorted_PIDs)+1
+
     wikidata_preprocessor = WikidataPreprocessor()
+    sorted_PIDs = wikidata_preprocessor.get_sorted_properties()
+
     for page in dump:
         for revision in page:
             if not is_relevant_page(page, revision):
@@ -53,8 +62,8 @@ def preprocess_wikidata(dump, verbose=False):
                 sys.stderr.flush()
 
             claims_tuples = wikidata_preprocessor.process(entity)
-            random.shuffle(claims_tuples)
-            claims_str = ' '.join([' '.join(claim) for claim in claims_tuples])
+            claims_sorted = sorted(claims_tuples, key=PID_comparator)
+            claims_str = ' '.join([' '.join(claim) for claim in claims_sorted])
             yield claims_str
 
 
@@ -79,3 +88,4 @@ streamer = mwcli.Streamer(
 )
 
 main = streamer.main
+
