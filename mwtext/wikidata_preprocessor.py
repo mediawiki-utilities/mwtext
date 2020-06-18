@@ -5,7 +5,11 @@ import re
 
 class WikidataPreprocessor:
     def process(self, entity):
-        return list(self._extract_property_values(entity))
+        claims_tuples = list(self._extract_property_values(entity))
+        claims_sorted = sorted(claims_tuples, key=self.PID_comparator)
+        claims_str = ' '.join([' '.join(claim) for claim in claims_sorted])
+        return claims_str
+
 
     @staticmethod
     def _extract_property_values(entity):
@@ -23,7 +27,15 @@ class WikidataPreprocessor:
                 yield (prop,)
 
 
-    def get_sorted_properties(self):
+    @staticmethod
+    def PID_comparator(claim_tuple):
+        try:
+            return WikidataPreprocessor.sorted_PIDs.index(claim_tuple[0])
+        except:
+            return len(WikidataPreprocessor.sorted_PIDs)+1
+
+
+    def get_sorted_properties():
         session = requests.Session()
         URL = "https://www.wikidata.org/w/api.php"
         PARAMS = {
@@ -37,3 +49,5 @@ class WikidataPreprocessor:
         PIDs = re.findall( 'P[0-9]+', WIKITEXT)
         return PIDs
 
+
+    sorted_PIDs = get_sorted_properties()
