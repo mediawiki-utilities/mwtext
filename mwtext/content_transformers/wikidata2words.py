@@ -31,12 +31,20 @@ class Wikidata2Words(ContentTransformer):
         doc = json.loads(content)
         entity = mwbase.Entity.from_json(doc)
         claims_tuples = list(self._extract_property_values(entity))
+        if self.instanceof_nonzero_namespace(claims_tuples):
+            return None
         claims_tuples.sort(key=self.get_claim_pid_index)
         return list(chain(*claims_tuples))
 
     def get_claim_pid_index(self, claims_tuple):
         pid = claims_tuple[0]
         return self.pid_order_map.get(pid, len(self.pid_order_map))
+
+    def instanceof_nonzero_namespace(self, claims_tuples):
+        namespace_QIDs = ['Q4167836', 'Q11266439', 'Q4663903']
+        return any((claims_tuple[0] == 'P31' and
+                    claims_tuple[1] in namespace_QIDs)
+                   for claims_tuple in claims_tuples)
 
     @staticmethod
     def _extract_property_values(entity):

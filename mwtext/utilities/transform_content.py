@@ -97,6 +97,8 @@ def transform_content(
                 continue
 
             transformed_doc = transformer.transform(revision.text)
+            if transformed_doc is None:
+                continue
             rev_doc = revision.to_json()
             rev_doc['page'] = page.to_json()
             rev_doc['page']['page_name'] = \
