@@ -10,16 +10,13 @@ vocab_limit=
 vocab_str=10k
 
 
-ukwiki_vectors: \
-        datasets/ukwiki-$(dump_date)-plaintext.w_labels.txt \
-        datasets/ukwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
-        datasets/ukwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv
 
 preprocessed_article_text: \
 		datasets/arwiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/cswiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/enwiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/kowiki-$(dump_date)-plaintext.w_labels.txt \
+		datasets/ukwiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/viwiki-$(dump_date)-plaintext.w_labels.txt
 
 learned_vectors: \
@@ -27,6 +24,7 @@ learned_vectors: \
 		datasets/cswiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
 		datasets/enwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
 		datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
+		datasets/ukwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
 		datasets/viwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2
 
 gensim_vectors: \
@@ -34,7 +32,9 @@ gensim_vectors: \
 		datasets/cswiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/enwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
+		datasets/ukwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/viwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv
+
 
 datasets/enwiki.labeled_article_items.json.bz2:
 	wget https://analytics.wikimedia.org/published/datasets/archive/public-datasets/all/ores/topic/enwiki-20191201-labeled_article_items.json.bz2 -qO- > $@
@@ -161,7 +161,7 @@ datasets/ukwiki-$(dump_date)-plaintext.w_labels.txt: \
 		datasets/enwiki.labeled_article_items.json.bz2
 	bzcat $^ | ./utility words2plaintext \
 	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
-	 --title-lang ko > $@
+	 --title-lang uk > $@
 
 datasets/ukwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2: \
 		datasets/ukwiki-$(dump_date)-plaintext.w_labels.txt
@@ -170,14 +170,6 @@ datasets/ukwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2: 
 datasets/ukwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv: \
 		datasets/ukwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2
 	./utility word2vec2gensim $^ $@
-
-datasets/ukwiki-$(dump_date)-preprocessed_article_text.w_labels.txt: \
-		datasets/ukwiki.labeled_article_items.json.bz2
-	./utility preprocess_text $(dump_dir)/ukwiki/$(dump_date)/ukwiki-$(dump_date)-pages-articles.xml.bz2 \
-	 --namespace 0 \
-	 --wiki-host https://uk.wikipedia.org \
-	 --labels $^ \
-	 --debug > $@
 
 
 ###################### Vietnamese Wikipedia ##########################
