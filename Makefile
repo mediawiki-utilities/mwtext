@@ -15,6 +15,9 @@ hywiki_vectors: \
 euwiki_vectors: \
 		datasets/euwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv
 
+srwiki_vectors: \
+		datasets/srwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv
+
 preprocessed_article_text: \
 		datasets/arwiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/cswiki-$(dump_date)-plaintext.w_labels.txt \
@@ -23,6 +26,7 @@ preprocessed_article_text: \
 		datasets/huwiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/hywiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/kowiki-$(dump_date)-plaintext.w_labels.txt \
+		datasets/srwiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/ukwiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/viwiki-$(dump_date)-plaintext.w_labels.txt
 
@@ -34,6 +38,7 @@ learned_vectors: \
 		datasets/huwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
 		datasets/hywiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
 		datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
+		datasets/srwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
 		datasets/ukwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
 		datasets/viwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2
 
@@ -45,6 +50,7 @@ gensim_vectors: \
 		datasets/huwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/hywiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
+		datasets/srwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/ukwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/viwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv
 
@@ -225,6 +231,31 @@ datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2: 
 
 datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv: \
 		datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2
+	./utility word2vec2gensim $^ $@
+
+
+###################### Serbian Wikipedia ##########################
+
+datasets/srwiki-$(dump_date)-revdocs-with-words.json.bz2:
+	./utility transform_content Wikitext2Words $(dump_dir)/srwiki/$(dump_date)/srwiki-$(dump_date)-pages-articles[!-]*.xml-*.bz2 \
+	 --namespace 0 \
+	 --min-content-length 200 \
+	 --wiki-host https://sr.wikipedia.org \
+	 --debug | bzip2 -c > $@
+
+datasets/srwiki-$(dump_date)-plaintext.w_labels.txt: \
+		datasets/srwiki-$(dump_date)-revdocs-with-words.json.bz2 \
+		datasets/enwiki.labeled_article_items.json.bz2
+	bzcat $^ | ./utility words2plaintext \
+	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
+	 --title-lang sr > $@
+
+datasets/srwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2: \
+		datasets/srwiki-$(dump_date)-plaintext.w_labels.txt
+	./utility learn_vectors $^ $(vector_params) | bzip2 -c > $@
+
+datasets/srwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv: \
+		datasets/srwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2
 	./utility word2vec2gensim $^ $@
 
 
