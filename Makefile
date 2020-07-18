@@ -12,10 +12,14 @@ vocab_str=10k
 hywiki_vectors: \
 		datasets/hywiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv
 
+euwiki_vectors: \
+		datasets/euwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv
+
 preprocessed_article_text: \
 		datasets/arwiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/cswiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/enwiki-$(dump_date)-plaintext.w_labels.txt \
+		datasets/euwiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/huwiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/hywiki-$(dump_date)-plaintext.w_labels.txt \
 		datasets/kowiki-$(dump_date)-plaintext.w_labels.txt \
@@ -26,6 +30,7 @@ learned_vectors: \
 		datasets/arwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
 		datasets/cswiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
 		datasets/enwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
+		datasets/euwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
 		datasets/huwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
 		datasets/hywiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
 		datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2 \
@@ -36,6 +41,7 @@ gensim_vectors: \
 		datasets/arwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/cswiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/enwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
+		datasets/euwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/huwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/hywiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
@@ -119,6 +125,31 @@ datasets/enwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2: 
 
 datasets/enwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv: \
 		datasets/enwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2
+	./utility word2vec2gensim $^ $@
+
+
+###################### Basque Wikipedia ##########################
+
+datasets/euwiki-$(dump_date)-revdocs-with-words.json.bz2:
+	./utility transform_content Wikitext2Words $(dump_dir)/euwiki/$(dump_date)/euwiki-$(dump_date)-pages-articles[!-]*.xml-*.bz2 \
+	 --namespace 0 \
+	 --min-content-length 200 \
+	 --wiki-host https://eu.wikipedia.org \
+	 --debug | bzip2 -c > $@
+
+datasets/euwiki-$(dump_date)-plaintext.w_labels.txt: \
+		datasets/euwiki-$(dump_date)-revdocs-with-words.json.bz2 \
+		datasets/enwiki.labeled_article_items.json.bz2
+	bzcat $^ | ./utility words2plaintext \
+	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
+	 --title-lang eu > $@
+
+datasets/euwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2: \
+		datasets/euwiki-$(dump_date)-plaintext.w_labels.txt
+	./utility learn_vectors $^ $(vector_params) | bzip2 -c > $@
+
+datasets/euwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv: \
+		datasets/euwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2
 	./utility word2vec2gensim $^ $@
 
 
