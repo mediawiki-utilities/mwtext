@@ -137,7 +137,7 @@ datasets/enwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_s
 ###################### Basque Wikipedia ##########################
 
 datasets/euwiki-$(dump_date)-revdocs-with-words.json.bz2:
-	./utility transform_content Wikitext2Words $(dump_dir)/euwiki/$(dump_date)/euwiki-$(dump_date)-pages-articles[!-]*.xml-*.bz2 \
+	./utility transform_content Wikitext2Words $(dump_dir)/euwiki/$(dump_date)/euwiki-$(dump_date)-pages-articles.xml.bz2 \
 	 --namespace 0 \
 	 --min-content-length 200 \
 	 --wiki-host https://eu.wikipedia.org \
@@ -187,7 +187,7 @@ datasets/huwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_s
 ###################### Armenian Wikipedia ##########################
 
 datasets/hywiki-$(dump_date)-revdocs-with-words.json.bz2:
-	./utility transform_content Wikitext2Words $(dump_dir)/hywiki/$(dump_date)/hywiki-$(dump_date)-pages-articles[!-]*.xml-*.bz2 \
+	./utility transform_content Wikitext2Words $(dump_dir)/hywiki/$(dump_date)/hywiki-$(dump_date)-pages-articles.xml.bz2 \
 	 --namespace 0 \
 	 --min-content-length 200 \
 	 --wiki-host https://hy.wikipedia.org \
@@ -237,7 +237,7 @@ datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_s
 ###################### Serbian Wikipedia ##########################
 
 datasets/srwiki-$(dump_date)-revdocs-with-words.json.bz2:
-	./utility transform_content Wikitext2Words $(dump_dir)/srwiki/$(dump_date)/srwiki-$(dump_date)-pages-articles[!-]*.xml-*.bz2 \
+	./utility transform_content Wikitext2Words $(dump_dir)/srwiki/$(dump_date)/srwiki-$(dump_date)-pages-articles.xml.bz2 \
 	 --namespace 0 \
 	 --min-content-length 200 \
 	 --wiki-host https://sr.wikipedia.org \
