@@ -1,7 +1,7 @@
 # Remove target files after command failure.
 #.DELETE_ON_ERROR:
 
-dump_dir=/home/pavol86/python-mwtext/xmldatadumps_temp
+dump_dir=/mnt/data/xmldatadumps/public
 dump_date=20201201
 vector_dimensions=50
 qt_cutoff=10000
