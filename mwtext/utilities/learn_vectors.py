@@ -4,15 +4,17 @@ a complete set of vectors for the words observed in the input text.
 
 Usage:
     learn_vectors (-h|--help)
-    learn_vectors <input> [--param=<kv>]... [--output=<path>]
+    learn_vectors <input> [--param=<kv>]... [--qt-cutoff=<num>] [--output=<path>]
 
 Options:
-    --param=<kv>     A named parameter for training the fasttext model.  The
-                     value will be interpretted as a JSON blob.
-    <input>          The path of an input file containing labels and words in
-                     the fasttext format.
-    --output=<path>  The output file to write vectors to [default: <stdout>]
-    --debug          Print debug information.
+    --param=<kv>       A named parameter for training the fasttext model. The
+                       value will be interpretted as a JSON blob.
+    <input>            The path of an input file containing labels and words in
+                       the fasttext format.
+    --qt-cutoff=<num>  Set a limit on the number of words that will stay in
+                       model dictionary after quantization(feature selection)
+    --output=<path>    The output file to write vectors to [default: <stdout>]
+    --debug            Print debug information.
 """
 import json
 import sys
@@ -36,12 +38,13 @@ def main(argv):
         output = sys.stdout
     else:
         output = open(args['--output'], "w")
+    qt_cutoff = int(args['--qt-cutoff']) if args['--qt-cutoff'] is not None else 0
+    learn_vectors(input_path, params, qt_cutoff, output)
 
-    learn_vectors(input_path, params, output)
 
-
-def learn_vectors(input_path, params, output):
+def learn_vectors(input_path, params, qt_cutoff, output):
     model = fasttext.train_supervised(input_path, **params)
+    model.quantize(input=input_path, cutoff=qt_cutoff, retrain=True, qnorm=True)
 
     dimensions = params.get('dim', 100)
     words = len(model.words)
