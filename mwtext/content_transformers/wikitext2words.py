@@ -4,6 +4,7 @@ import re
 import itertools
 from deltas.tokenizers import lexicon
 from deltas.tokenizers import cjk_tokenization
+from hanziconv import HanziConv
 
 strip_wikitext = [
     r"<!--.*?-->",  # no commented out text
@@ -84,5 +85,8 @@ class Wikitext2Words(ContentTransformer):
                     processed_word = cjk_tokenization.CJK_tokenization(
                                             extracted_words[i], language)
                     extracted_words[i:i+1] = [word for word in processed_word]
+
+                # convert traditional chinse symbols to simplified
+                extracted_words = list(map(HanziConv.toSimplified, extracted_words))
 
         return extracted_words
