@@ -1,22 +1,13 @@
 # Remove target files after command failure.
 #.DELETE_ON_ERROR:
 
-dump_dir=/home/pavol86/python-mwtext/xmldatadumps_temp
+dump_dir=/mnt/data/xmldatadumps/public
 dump_date=20201201
 vector_dimensions=50
 qt_cutoff=10000
 vector_params=--param 'dim=$(vector_dimensions)' --param 'loss="ova"' --qt-cutoff=$(qt_cutoff)
 vocab_limit=
 vocab_str=10k
-
-hywiki_vectors: \
-		datasets/hywiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv
-
-euwiki_vectors: \
-		datasets/euwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv
-
-srwiki_vectors: \
-		datasets/srwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv
 
 preprocessed_article_text: \
 		datasets/arwiki-$(dump_date)-plaintext.w_labels.txt \
@@ -50,19 +41,19 @@ learned_vectors: \
 
 
 gensim_vectors: \
-		datasets/arwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
-		datasets/cswiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
-		datasets/enwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/euwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/huwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/hywiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
-		datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/jawiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/srwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/ukwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
-		datasets/viwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/wikidata-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 		datasets/zhwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv
+#		datasets/arwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
+#		datasets/cswiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
+#		datasets/enwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
+#		datasets/viwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
+#		datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv \
 
 
 datasets/enwiki.labeled_article_items.json.bz2:
@@ -156,7 +147,7 @@ datasets/euwiki-$(dump_date)-revdocs-with-words.json.bz2:
 datasets/euwiki-$(dump_date)-plaintext.w_labels.txt: \
 		datasets/euwiki-$(dump_date)-revdocs-with-words.json.bz2 \
 		datasets/enwiki.labeled_article_items.json.bz2
-	bzcat $^ | ./utility words2plaintext \
+	bzcat $< | ./utility words2plaintext \
 	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
 	 --title-lang eu > $@
 
@@ -181,7 +172,7 @@ datasets/huwiki-$(dump_date)-revdocs-with-words.json.bz2:
 datasets/huwiki-$(dump_date)-plaintext.w_labels.txt: \
 		datasets/huwiki-$(dump_date)-revdocs-with-words.json.bz2 \
 		datasets/enwiki.labeled_article_items.json.bz2
-	bzcat $^ | ./utility words2plaintext \
+	bzcat $< | ./utility words2plaintext \
 	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
 	 --title-lang hu > $@
 
@@ -206,7 +197,7 @@ datasets/hywiki-$(dump_date)-revdocs-with-words.json.bz2:
 datasets/hywiki-$(dump_date)-plaintext.w_labels.txt: \
 		datasets/hywiki-$(dump_date)-revdocs-with-words.json.bz2 \
 		datasets/enwiki.labeled_article_items.json.bz2
-	bzcat $^ | ./utility words2plaintext \
+	bzcat $< | ./utility words2plaintext \
 	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
 	 --title-lang hy > $@
 
@@ -231,7 +222,7 @@ datasets/kowiki-$(dump_date)-revdocs-with-words.json.bz2:
 datasets/kowiki-$(dump_date)-plaintext.w_labels.txt: \
 		datasets/kowiki-$(dump_date)-revdocs-with-words.json.bz2 \
 		datasets/enwiki.labeled_article_items.json.bz2
-	bzcat $^ | ./utility words2plaintext \
+	bzcat $< | ./utility words2plaintext \
 	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
 	 --title-lang ko > $@
 
@@ -256,7 +247,7 @@ datasets/srwiki-$(dump_date)-revdocs-with-words.json.bz2:
 datasets/srwiki-$(dump_date)-plaintext.w_labels.txt: \
 		datasets/srwiki-$(dump_date)-revdocs-with-words.json.bz2 \
 		datasets/enwiki.labeled_article_items.json.bz2
-	bzcat $^ | ./utility words2plaintext \
+	bzcat $< | ./utility words2plaintext \
 	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
 	 --title-lang sr > $@
 
@@ -281,7 +272,7 @@ datasets/ukwiki-$(dump_date)-revdocs-with-words.json.bz2:
 datasets/ukwiki-$(dump_date)-plaintext.w_labels.txt: \
 		datasets/ukwiki-$(dump_date)-revdocs-with-words.json.bz2 \
 		datasets/enwiki.labeled_article_items.json.bz2
-	bzcat $^ | ./utility words2plaintext \
+	bzcat $< | ./utility words2plaintext \
 	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
 	 --title-lang uk > $@
 
@@ -307,7 +298,7 @@ datasets/jawiki-$(dump_date)-revdocs-with-words.json.bz2:
 datasets/jawiki-$(dump_date)-plaintext.w_labels.txt: \
 		datasets/jawiki-$(dump_date)-revdocs-with-words.json.bz2 \
 		datasets/enwiki.labeled_article_items.json.bz2
-	bzcat $^ | ./utility words2plaintext \
+	bzcat $< | ./utility words2plaintext \
 	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
 	 --title-lang ja > $@
 
@@ -340,7 +331,7 @@ datasets/zhwiki-$(dump_date)-revdocs-with-words.json.bz2:
 datasets/zhwiki-$(dump_date)-plaintext.w_labels.txt: \
 		datasets/zhwiki-$(dump_date)-revdocs-with-words.json.bz2 \
 		datasets/enwiki.labeled_article_items.json.bz2
-	bzcat $^ | ./utility words2plaintext \
+	bzcat $< | ./utility words2plaintext \
 	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
 	 --title-lang zh > $@
 
