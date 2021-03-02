@@ -211,27 +211,27 @@ datasets/hywiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_s
 
 ###################### Korean Wikipedia ##########################
 
-datasets/kowiki-$(dump_date)-revdocs-with-words.json.bz2:
+datasets/kowiki-$(dump_date)-revdocs-with-cjk_words.json.bz2:
 	./utility transform_content Wikitext2Words $(dump_dir)/kowiki/$(dump_date)/kowiki-$(dump_date)-pages-articles[!-]*.xml-*.bz2 \
-         --param 'tok_strategy="CJK"' \
+	 --param 'tok_strategy="CJK"' \
 	 --namespace 0 \
 	 --min-content-length 200 \
 	 --wiki-host https://ko.wikipedia.org \
 	 --debug | bzip2 -c > $@
 
-datasets/kowiki-$(dump_date)-plaintext.w_labels.txt: \
-		datasets/kowiki-$(dump_date)-revdocs-with-words.json.bz2 \
+datasets/kowiki-$(dump_date)-plaintext.cjk_words.w_labels.txt: \
+		datasets/kowiki-$(dump_date)-revdocs-with-cjk_words.json.bz2 \
 		datasets/enwiki.labeled_article_items.json.bz2
 	bzcat $< | ./utility words2plaintext \
 	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
 	 --title-lang ko > $@
 
-datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2: \
-		datasets/kowiki-$(dump_date)-plaintext.w_labels.txt
+datasets/kowiki-$(dump_date)-learned_vectors.cjk_words.$(vector_dimensions)_cell.vec.bz2: \
+		datasets/kowiki-$(dump_date)-plaintext.cjk_words.w_labels.txt
 	./utility learn_vectors $^ $(vector_params) | bzip2 -c > $@
 
-datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv: \
-		datasets/kowiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2
+datasets/kowiki-$(dump_date)-learned_vectors.cjk_words.$(vector_dimensions)_cell.$(vocab_str).kv: \
+		datasets/kowiki-$(dump_date)-learned_vectors.cjk_words.$(vector_dimensions)_cell.vec.bz2
 	./utility word2vec2gensim $^ $@
 
 
@@ -288,33 +288,33 @@ datasets/ukwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_s
 ###################### Japanese Wikipedia ##########################
 
 
-datasets/jawiki-$(dump_date)-revdocs-with-words.json.bz2:
+datasets/jawiki-$(dump_date)-revdocs-with-cjk_words.json.bz2:
 	./utility transform_content Wikitext2Words $(dump_dir)/jawiki/$(dump_date)/jawiki-$(dump_date)-pages-articles[!-]*.xml-*.bz2 \
-         --param 'tok_strategy="CJK"' \
+	 --param 'tok_strategy="CJK"' \
 	 --namespace 0 \
 	 --min-content-length 200 \
 	 --wiki-host https://ja.wikipedia.org \
 	 --debug | bzip2 -c > $@
 
-datasets/jawiki-$(dump_date)-plaintext.w_labels.txt: \
-		datasets/jawiki-$(dump_date)-revdocs-with-words.json.bz2 \
+datasets/jawiki-$(dump_date)-plaintext.cjk_words.w_labels.txt: \
+		datasets/jawiki-$(dump_date)-revdocs-with-cjk_words.json.bz2 \
 		datasets/enwiki.labeled_article_items.json.bz2
 	bzcat $< | ./utility words2plaintext \
 	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
 	 --title-lang ja > $@
 
-datasets/jawiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2: \
-		datasets/jawiki-$(dump_date)-plaintext.w_labels.txt
+datasets/jawiki-$(dump_date)-learned_vectors.cjk_words.$(vector_dimensions)_cell.vec.bz2: \
+		datasets/jawiki-$(dump_date)-plaintext.cjk_words.w_labels.txt
 	./utility learn_vectors $^ $(vector_params) | bzip2 -c > $@
 
-datasets/jawiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv: \
-		datasets/jawiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2
+datasets/jawiki-$(dump_date)-learned_vectors.cjk_words.$(vector_dimensions)_cell.$(vocab_str).kv: \
+		datasets/jawiki-$(dump_date)-learned_vectors.cjk_words.$(vector_dimensions)_cell.vec.bz2
 	./utility word2vec2gensim $^ $@
 
 ###################### Chinese Wikipedia ##########################
 
 
-datasets/zhwiki-$(dump_date)-revdocs-with-words.json.bz2:
+datasets/zhwiki-$(dump_date)-revdocs-with-cjk_words.json.bz2:
 	./utility transform_content Wikitext2Words $(dump_dir)/zhwiki/$(dump_date)/zhwiki-$(dump_date)-pages-articles[!-]*.xml-*.bz2 \
 	 --param 'tok_strategy="CJK"' \
 	 --namespace 0 \
@@ -322,19 +322,19 @@ datasets/zhwiki-$(dump_date)-revdocs-with-words.json.bz2:
 	 --wiki-host https://zh.wikipedia.org \
 	 --debug | bzip2 -c > $@
 
-datasets/zhwiki-$(dump_date)-plaintext.w_labels.txt: \
-		datasets/zhwiki-$(dump_date)-revdocs-with-words.json.bz2 \
+datasets/zhwiki-$(dump_date)-plaintext.cjk_words.w_labels.txt: \
+		datasets/zhwiki-$(dump_date)-revdocs-with-cjk_words.json.bz2 \
 		datasets/enwiki.labeled_article_items.json.bz2
 	bzcat $< | ./utility words2plaintext \
 	 --labels datasets/enwiki.labeled_article_items.json.bz2 \
 	 --title-lang zh > $@
 
-datasets/zhwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2: \
-		datasets/zhwiki-$(dump_date)-plaintext.w_labels.txt
+datasets/zhwiki-$(dump_date)-learned_vectors.cjk_words.$(vector_dimensions)_cell.vec.bz2: \
+		datasets/zhwiki-$(dump_date)-plaintext.cjk_words.w_labels.txt
 	./utility learn_vectors $^ $(vector_params) | bzip2 -c > $@
 
-datasets/zhwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.$(vocab_str).kv: \
-		datasets/zhwiki-$(dump_date)-learned_vectors.$(vector_dimensions)_cell.vec.bz2
+datasets/zhwiki-$(dump_date)-learned_vectors.cjk_words.$(vector_dimensions)_cell.$(vocab_str).kv: \
+		datasets/zhwiki-$(dump_date)-learned_vectors.cjk_words.$(vector_dimensions)_cell.vec.bz2
 	./utility word2vec2gensim $^ $@
 
 ###################### Vietnamese Wikipedia ##########################
